@@ -92,6 +92,9 @@ const Header = () => {
             <DropdownItem href="#gestao-atual" $hasDivider>
               Gestão Atual
             </DropdownItem>
+            <DropdownItem href="#localizacao" $hasDivider>
+              Localização
+            </DropdownItem>
           </DropdownMenu>
         </NavItem>
 
