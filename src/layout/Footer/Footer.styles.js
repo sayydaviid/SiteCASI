@@ -5,7 +5,7 @@ import styled from 'styled-components';
 export const FooterContainer = styled.footer`
   width: 100%;
   padding: 2rem 1rem;
-  background-color: #343a40; /* Um cinza escuro e profissional */
+  background-color: #000000FF; /* Um cinza escuro e profissional */
   color: #f8f9fa; /* Texto quase branco */
   display: flex;
   flex-direction: column;
