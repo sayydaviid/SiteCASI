@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
-export const NewsPageContainer = styled.div`
+// Reutilizamos os mesmos estilos da página de notícias
+export const ProjectsPageContainer = styled.div`
   max-width: 1200px;
   margin: 40px auto;
   padding: 20px;
@@ -35,17 +36,13 @@ export const FeaturedPost = styled.a`
     aspect-ratio: 16 / 9;
     object-fit: cover;
     margin-bottom: 15px;
+    border-radius: 8px;
   }
 
   h2 {
     font-size: 2rem;
     line-height: 1.2;
     margin-bottom: 10px;
-  }
-
-  p {
-    font-size: 1rem;
-    color: #555;
   }
 `;
 
@@ -65,6 +62,7 @@ export const HighlightCard = styled.a`
     width: 120px;
     height: 80px;
     object-fit: cover;
+    border-radius: 4px;
   }
 
   h3 {

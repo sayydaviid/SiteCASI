@@ -1,6 +1,5 @@
-// src/layout/Header/Header.jsx
-
 import React, { useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import {
   HeaderContainer,
   LogoContainer,
@@ -21,123 +20,75 @@ const Header = () => {
   const navRef = useRef(null);
   const closeTimeoutRef = useRef(null);
 
-  // calcula underline
-  const handleMouseEnterNavItem = e => {
-    const navRect  = navRef.current.getBoundingClientRect();
+  // --- LÓGICA UNIFICADA ---
+
+  // Função chamada quando o rato entra em QUALQUER item da navegação
+  const handleMouseEnter = (e, opensDropdown = false) => {
+    // Cancela qualquer timeout pendente para fechar o menu
+    clearTimeout(closeTimeoutRef.current);
+
+    // Calcula a posição e mostra o sublinhado
+    const navRect = navRef.current.getBoundingClientRect();
     const itemRect = e.currentTarget.getBoundingClientRect();
     setUnderline({
-      left:  itemRect.left - navRect.left,
+      left: itemRect.left - navRect.left,
       width: itemRect.width,
       visible: true
     });
+
+    // Abre o dropdown apenas se for o item correto
+    setIsDropdownOpen(opensDropdown);
   };
 
-  // abre imediatamente
-  const handleNavItemMouseEnter = e => {
-    clearTimeout(closeTimeoutRef.current);
-    setIsDropdownOpen(true);
-    handleMouseEnterNavItem(e);
-  };
-
-  // inicia timeout para fechar
-  const handleNavItemMouseLeave = () => {
+  // Função chamada quando o rato sai da ÁREA TOTAL da navegação
+  const handleMouseLeaveNav = () => {
+    // Inicia um pequeno timeout para dar uma sensação mais suave
     closeTimeoutRef.current = setTimeout(() => {
       setIsDropdownOpen(false);
       setUnderline(u => ({ ...u, visible: false }));
     }, 150);
   };
 
-  // se entrar no dropdown, cancela fechamento
-  const handleDropdownMouseEnter = () => {
-    clearTimeout(closeTimeoutRef.current);
-  };
-
-  // se sair do dropdown, fecha imediatamente
-  const handleDropdownMouseLeave = () => {
-    setIsDropdownOpen(false);
-    setUnderline(u => ({ ...u, visible: false }));
-  };
-
   return (
     <HeaderContainer>
-      {/*
-        Renderiza LogoContainer COMO <a> para manter o flex e
-        ao mesmo tempo criar a âncora para #home
-      */}
-      <LogoContainer
-        as="a"
-        href="#home"
-        style={{ textDecoration: 'none' }}
-      >
+      <LogoContainer as={Link} to="/" style={{ textDecoration: 'none' }}>
         <img src={logo} alt="Logo Ada" />
         <span>CASI UFPA</span>
       </LogoContainer>
 
-      <Nav ref={navRef}>
-        {/* NavItem CASI */}
-        <NavItem
-          onMouseEnter={handleNavItemMouseEnter}
-          onMouseLeave={handleNavItemMouseLeave}
-        >
-          <NavLink href="#">
+      {/* Os eventos agora estão no container <Nav> */}
+      <Nav ref={navRef} onMouseLeave={handleMouseLeaveNav} onMouseEnter={() => clearTimeout(closeTimeoutRef.current)}>
+        {/* NavItem CASI (com dropdown) */}
+        <NavItem onMouseEnter={e => handleMouseEnter(e, true)}>
+          <NavLink as={Link} to="/">
             CASI&nbsp;<Arrow $open={isDropdownOpen}>▾</Arrow>
           </NavLink>
-
-          <DropdownMenu
-            $open={isDropdownOpen}
-            onMouseEnter={handleDropdownMouseEnter}
-            onMouseLeave={handleDropdownMouseLeave}
-          >
-            <DropdownItem href="#sobre">Sobre</DropdownItem>
-            <DropdownItem href="#gestao-atual" $hasDivider>
-              Gestão Atual
-            </DropdownItem>
-            <DropdownItem href="#localizacao" $hasDivider>
-              Localização
-            </DropdownItem>
+          <DropdownMenu $open={isDropdownOpen}>
+            <DropdownItem href="/#sobre">Sobre</DropdownItem>
+            <DropdownItem href="/#gestao-atual" $hasDivider>Gestão Atual</DropdownItem>
+            <DropdownItem href="/#localizacao" $hasDivider>Localização</DropdownItem>
           </DropdownMenu>
         </NavItem>
 
-        {/* Outros itens: apenas underline e fecha dropdown */}
-        <NavItem
-          onMouseEnter={e => {
-            handleMouseEnterNavItem(e);
-            setIsDropdownOpen(false);
-          }}
-        >
-          <NavLink href="#noticias">Notícias</NavLink>
+        {/* Outros itens (sem dropdown) */}
+        <NavItem onMouseEnter={handleMouseEnter}>
+          <NavLink as={Link} to="/noticias">Notícias</NavLink>
         </NavItem>
 
-        <NavItem
-          onMouseEnter={e => {
-            handleMouseEnterNavItem(e);
-            setIsDropdownOpen(false);
-          }}
-        >
-          <NavLink href="#projetos">Projetos</NavLink>
+        <NavItem onMouseEnter={handleMouseEnter}>
+          <NavLink as={Link} to="/projetos">Projetos</NavLink>
         </NavItem>
 
-        <NavItem
-          onMouseEnter={e => {
-            handleMouseEnterNavItem(e);
-            setIsDropdownOpen(false);
-          }}
-        >
-          <NavLink href="#publicacoes">Publicações</NavLink>
+        <NavItem onMouseEnter={handleMouseEnter}>
+          <NavLink as={Link} to="/publicacoes">Publicações</NavLink>
         </NavItem>
 
-        {/* Loja */}
-        <ShopButton
-          href="#loja"
-          onMouseEnter={() => {
-            setIsDropdownOpen(false);
-            setUnderline(u => ({ ...u, visible: false }));
-          }}
-        >
+        {/* Botão Loja (com comportamento especial) */}
+        <ShopButton as={Link} to="/loja" onMouseEnter={() => setUnderline(u => ({ ...u, visible: false }))}>
           LOJA
         </ShopButton>
 
-        {/* Underline animada */}
+        {/* Underline animada (continua igual) */}
         <Underline
           $left={underline.left}
           $width={underline.width}
