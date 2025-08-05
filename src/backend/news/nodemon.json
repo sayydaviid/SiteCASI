@@ -1,0 +1,6 @@
+{
+  "watch": ["*.js", "routes/*.js"],
+  "ext": "js",
+  "ignore": ["*.json"],
+  "exec": "node app.js"
+}
